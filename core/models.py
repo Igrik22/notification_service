@@ -69,8 +69,7 @@ class Client(models.Model):
                                     verbose_name='номер телефона клиента')
     operator = models.ForeignKey(Operator, on_delete=models.CASCADE, related_name='clients',
                                  verbose_name='мобильный оператор')
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='clients', blank=True, null=True,
-                            verbose_name='тэг(произвольная метка)')
+    tag = models.ManyToManyField(Tag, related_name='clients', blank=True, verbose_name='тэг(произвольная метка)')
     time_zone = TimeZoneField(choices_display="WITH_GMT_OFFSET",
                               default=settings.TIME_ZONE, blank=True, verbose_name='часовой пояс')
 

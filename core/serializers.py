@@ -26,20 +26,13 @@ class OperatorSerializer(serializers.ModelSerializer):
         fields = ('operator_code',)
 
 
-class MessageWithStatusSerializer(serializers.ModelSerializer):
+class MessageSerializer(serializers.ModelSerializer):
 
     status = StatusChoiceSerializer(required=False)
 
     class Meta:
         model = Message
         fields = '__all__'
-
-
-class MessageSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Message
-        exclude = ('status', )
 
 
 class DistributionSerializer(serializers.ModelSerializer):
@@ -60,17 +53,16 @@ class ClientSerializer(serializers.ModelSerializer):
     def get_operator(self):
         phone_number = self.validated_data.get('phone_number')
         if phone_number:
-            operator_code = int(self.validated_data.get('phone_number')[1:4])
-            mobile_operator_code = Operator.objects.get_or_create(operator_code=operator_code)
-            return mobile_operator_code
+            your_operator_code = int(self.validated_data.get('phone_number')[1:4])
+            operator_code, _ = Operator.objects.get_or_create(operator_code=your_operator_code)
+            return operator_code
 
     def create(self, validated_data):
 
         tags = Tag.objects.filter(tag__in=validated_data.get('tag', []))
-
         client = Client.objects.create(
             phone_number=validated_data.get('phone_number'),
-            operator_code=self.get_operator(),
+            operator=self.get_operator(),
             time_zone=validated_data.get('time_zone', settings.TIME_ZONE),
         )
         client.tag.set(tags)
