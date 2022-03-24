@@ -24,9 +24,7 @@ router.register(r'clients', views.ClientViewSet)
 router.register(r'messages', views.MessageViewSet)
 router.register(r'operators', views.OperatorViewSet)
 router.register(r'tags', views.TagViewSet)
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
 ]
-
